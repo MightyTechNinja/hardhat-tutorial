@@ -7,9 +7,11 @@
 
 # testing
 /coverage
+/cache
 
 # production
 /build
+/artifacts
 
 # misc
 .DS_Store
