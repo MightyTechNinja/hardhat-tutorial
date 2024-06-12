@@ -37,6 +37,8 @@ contract Staking {
         stakes[msg.sender].push(value);
         initialTimes[msg.sender].push(block.timestamp);
         updatedTimes[msg.sender].push(block.timestamp);
+
+        emit Staked(msg.sender, value);
     }
 
     function unstake(uint256 index) external {
@@ -54,6 +56,8 @@ contract Staking {
         delete stakes[msg.sender][index];
         delete initialTimes[msg.sender][index];
         delete updatedTimes[msg.sender][index];
+
+        emit Unstaked(msg.sender, stakes[msg.sender][index]);
     }
 
     function getReward(uint256 index) external {
@@ -64,6 +68,8 @@ contract Staking {
         uint256 rewards = calculateRewards(msg.sender, index);
         token.transfer(msg.sender, rewards);
         updatedTimes[msg.sender][index] = block.timestamp;
+
+        emit RewardPaid(msg.sender, rewards);
     }
 
     function calculateRewards(

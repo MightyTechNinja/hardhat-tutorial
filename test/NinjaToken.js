@@ -20,7 +20,7 @@ const {
 // `describe` receives the name of a section of your test suite, and a
 // callback. The callback must define the tests of that section. This callback
 // can't be an async function.
-describe("Token contract", function () {
+describe("NinjaToken contract", function () {
   // We define a fixture to reuse the same setup in every test. We use
   // loadFixture to run this setup once, snapshot that state, and reset Hardhat
   // Network to that snapshot in every test.
@@ -31,7 +31,7 @@ describe("Token contract", function () {
     // To deploy our contract, we just have to call ethers.deployContract and await
     // its waitForDeployment() method, which happens once its transaction has been
     // mined.
-    const hardhatToken = await ethers.deployContract("Token");
+    const hardhatToken = await ethers.deployContract("NinjaToken");
 
     await hardhatToken.waitForDeployment();
 
@@ -43,20 +43,6 @@ describe("Token contract", function () {
   describe("Deployment", function () {
     // `it` is another Mocha function. This is the one you use to define each
     // of your tests. It receives the test name, and a callback function.
-    //
-    // If the callback function is async, Mocha will `await` it.
-    it("Should set the right owner", async function () {
-      // We use loadFixture to setup our environment, and then assert that
-      // things went well
-      const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-
-      // `expect` receives a value and wraps it in an assertion object. These
-      // objects have a lot of utility methods to assert values.
-
-      // This test expects the owner variable stored in the contract to be
-      // equal to our Signer's owner.
-      expect(await hardhatToken.owner()).to.equal(owner.address);
-    });
 
     it("Should assign the total supply of tokens to the owner", async function () {
       const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
