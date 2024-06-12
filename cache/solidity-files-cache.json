@@ -1,44 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\Token.sol": {
-      "lastModificationDate": 1718013229965,
-      "contentHash": "57a27ae80e6def805b38a1a0ded73689",
-      "sourceName": "contracts/Token.sol",
-      "solcConfig": {
-        "version": "0.8.24",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "hardhat/console.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Token"
-      ]
-    },
     "D:\\Work\\Ethereum\\hardhat-tutorial\\node_modules\\hardhat\\console.sol": {
       "lastModificationDate": 1717856883264,
       "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
@@ -73,6 +35,155 @@
       ],
       "artifacts": [
         "console"
+      ]
+    },
+    "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\IERC20.sol": {
+      "lastModificationDate": 1718202395625,
+      "contentHash": "ebfb4b5d72e7eea7d0ef02add948250c",
+      "sourceName": "contracts/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\Staking.sol": {
+      "lastModificationDate": 1718202386278,
+      "contentHash": "4479b11ce11979a3271fe8b75570a8c8",
+      "sourceName": "contracts/Staking.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol",
+        "./SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "Staking"
+      ]
+    },
+    "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\SafeMath.sol": {
+      "lastModificationDate": 1718197709299,
+      "contentHash": "105ee7b49102f0e40d76015bc1e09adf",
+      "sourceName": "contracts/SafeMath.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "SafeMath"
+      ]
+    },
+    "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\NinjaToken.sol": {
+      "lastModificationDate": 1718198909400,
+      "contentHash": "870d34a2091207b25cc8f3aedc1f42c4",
+      "sourceName": "contracts/NinjaToken.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "NinjaToken"
       ]
     }
   }
