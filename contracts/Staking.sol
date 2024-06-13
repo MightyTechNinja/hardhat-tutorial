@@ -87,7 +87,7 @@ contract Staking {
         emit TokenUnstaked(msg.sender, amount);
     }
 
-    function takeReward() external {
+    function takeRewards() external {
         Stake storage stake = stakes[msg.sender];
         updateRewards(msg.sender);
         token.transfer(msg.sender, stake.rewards);

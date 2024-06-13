@@ -32,7 +32,7 @@ describe("Staking contract", function () {
 
       await hardhatToken.approve(contract.target, 10000);
 
-      await expect(contract.stake(10000)).to.changeTokenBalances(
+      await expect(contract.stakeTokens(10000)).to.changeTokenBalances(
         hardhatToken,
         [owner, contract],
         [-10000, 10000]
@@ -42,21 +42,21 @@ describe("Staking contract", function () {
       await ethers.provider.send("evm_increaseTime", [oneMonth]);
       await ethers.provider.send("evm_mine");
 
-      await expect(contract.unstake(0)).to.changeTokenBalances(
+      await expect(contract.unstakeTokens(0)).to.changeTokenBalances(
         hardhatToken,
         [owner, contract],
         [10000, -10000]
       );
     });
 
-    it("Should get rewards", async function () {
+    it("Should take rewards", async function () {
       const { hardhatToken, contract, owner } = await loadFixture(
         deployTokenAndStakingFixture
       );
 
       await hardhatToken.approve(contract.target, 10000);
 
-      await expect(contract.stake(10000)).to.changeTokenBalances(
+      await expect(contract.stakeTokens(10000)).to.changeTokenBalances(
         hardhatToken,
         [owner, contract],
         [-10000, 10000]
@@ -66,22 +66,42 @@ describe("Staking contract", function () {
       await ethers.provider.send("evm_increaseTime", [oneMonth]);
       await ethers.provider.send("evm_mine");
 
-      await expect(contract.getReward(0)).to.changeTokenBalances(
+      await expect(contract.takeRewards()).to.changeTokenBalances(
         hardhatToken,
         [owner],
         [Math.floor((10000 * 20 * 30) / 365 / 100)]
       );
     });
 
-    it("Should emit Staked events", async function () {
+    it("Should get stakeinfo", async function () {
       const { hardhatToken, contract, owner } = await loadFixture(
         deployTokenAndStakingFixture
       );
 
       await hardhatToken.approve(contract.target, 10000);
-      await expect(contract.stake(10000))
-        .to.emit(contract, "Staked")
-        .withArgs(owner.address, 10000);
+
+      await expect(contract.stakeTokens(10000)).to.changeTokenBalances(
+        hardhatToken,
+        [owner, contract],
+        [-10000, 10000]
+      );
+
+      await hardhatToken.approve(contract.target, 5000);
+
+      await expect(contract.stakeTokens(5000)).to.changeTokenBalances(
+        hardhatToken,
+        [owner, contract],
+        [-5000, 5000]
+      );
+
+      const oneMonth = 30 * 24 * 60 * 60;
+      await ethers.provider.send("evm_increaseTime", [oneMonth]);
+      await ethers.provider.send("evm_mine");
+
+      await contract.unstakeTokens(0);
+
+      const info = await contract.getStakeInfo();
+      expect(info[0]).to.equal(5000);
     });
   });
 });

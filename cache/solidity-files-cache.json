@@ -74,8 +74,8 @@
       ]
     },
     "D:\\Work\\Ethereum\\hardhat-tutorial\\contracts\\Staking.sol": {
-      "lastModificationDate": 1718211392670,
-      "contentHash": "da9fb38b286a7fdb91a688870a7a7a15",
+      "lastModificationDate": 1718271218565,
+      "contentHash": "188769f25ce2701cb1e73bee5ed4efef",
       "sourceName": "contracts/Staking.sol",
       "solcConfig": {
         "version": "0.8.24",
