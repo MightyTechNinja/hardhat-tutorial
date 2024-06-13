@@ -5,6 +5,14 @@ pragma solidity ^0.8.24;
 import "./IERC20.sol";
 import "./SafeMath.sol";
 
+struct Stake {
+    uint256 totalBalance;
+    uint256 rewards;
+    uint256 lastUpdateTime;
+    uint256[] balances;
+    uint256[] initialTimes;
+}
+
 contract Staking {
     using SafeMath for uint256;
 
@@ -12,9 +20,7 @@ contract Staking {
     uint256 public totalStake;
     uint256 public interestRate;
 
-    mapping(address => uint256[]) stakes;
-    mapping(address => uint256[]) initialTimes;
-    mapping(address => uint256[]) updatedTimes;
+    mapping(address => Stake) public stakes;
 
     constructor(address _tokenAddress) {
         token = IERC20(_tokenAddress);
@@ -22,11 +28,11 @@ contract Staking {
         interestRate = 20;
     }
 
-    event Staked(address indexed staker, uint256 amount);
-    event Unstaked(address indexed staker, uint256 amount);
+    event TokenStaked(address indexed staker, uint256 amount);
+    event TokenUnstaked(address indexed staker, uint256 amount);
     event RewardPaid(address indexed staker, uint256 amount);
 
-    function stake(uint256 value) external {
+    function stakeTokens(uint256 value) external {
         require(value > 0, "Amount of tokens must be greater than 0");
         require(
             token.allowance(msg.sender, address(this)) >= value,
@@ -34,54 +40,76 @@ contract Staking {
         );
         token.transferFrom(msg.sender, address(this), value);
         totalStake = totalStake.add(value);
-        stakes[msg.sender].push(value);
-        initialTimes[msg.sender].push(block.timestamp);
-        updatedTimes[msg.sender].push(block.timestamp);
 
-        emit Staked(msg.sender, value);
+        Stake storage stake = stakes[msg.sender];
+        if (stake.totalBalance != 0) updateRewards(msg.sender);
+        stake.totalBalance = stake.totalBalance.add(value);
+        stake.balances.push(value);
+        stake.initialTimes.push(block.timestamp);
+        stake.lastUpdateTime = block.timestamp;
+
+        emit TokenStaked(msg.sender, value);
     }
 
-    function unstake(uint256 index) external {
+    function getStakeInfo()
+        external
+        view
+        returns (uint256, uint256, uint256[] memory, uint256[] memory)
+    {
+        Stake memory stake = stakes[msg.sender];
+        uint256 totalBalance = stake.totalBalance;
+        uint256 rewards = calcRewards(msg.sender);
+        uint256[] memory balances = stake.balances;
+        uint256[] memory initialTimes = stake.initialTimes;
+        return (totalBalance, rewards, balances, initialTimes);
+    }
+
+    function unstakeTokens(uint256 index) external {
         require(
-            index < stakes[msg.sender].length && index >= 0,
+            index < stakes[msg.sender].balances.length && index >= 0,
             "Index out of bounds"
         );
         require(
-            block.timestamp >= initialTimes[msg.sender][index].add(30 days),
+            block.timestamp >=
+                stakes[msg.sender].initialTimes[index].add(30 days),
             "Locking period not over"
         );
-        token.transfer(msg.sender, stakes[msg.sender][index]);
-        totalStake = totalStake.sub(stakes[msg.sender][index]);
+        uint256 amount = stakes[msg.sender].balances[index];
+        token.transfer(msg.sender, amount);
+        totalStake = totalStake.sub(amount);
 
-        delete stakes[msg.sender][index];
-        delete initialTimes[msg.sender][index];
-        delete updatedTimes[msg.sender][index];
+        Stake storage stake = stakes[msg.sender];
+        updateRewards(msg.sender);
+        stake.totalBalance = stake.totalBalance.sub(amount);
+        stake.balances[index] = 0;
+        stake.lastUpdateTime = block.timestamp;
 
-        emit Unstaked(msg.sender, stakes[msg.sender][index]);
+        emit TokenUnstaked(msg.sender, amount);
     }
 
-    function getReward(uint256 index) external {
-        require(
-            index < stakes[msg.sender].length && index >= 0,
-            "Index out of bounds"
-        );
-        uint256 rewards = calculateRewards(msg.sender, index);
-        token.transfer(msg.sender, rewards);
-        updatedTimes[msg.sender][index] = block.timestamp;
+    function takeReward() external {
+        Stake storage stake = stakes[msg.sender];
+        updateRewards(msg.sender);
+        token.transfer(msg.sender, stake.rewards);
+        stake.rewards = 0;
+        stake.lastUpdateTime = block.timestamp;
 
-        emit RewardPaid(msg.sender, rewards);
+        emit RewardPaid(msg.sender, stake.rewards);
     }
 
-    function calculateRewards(
-        address owner,
-        uint256 index
-    ) internal view returns (uint256) {
-        uint256 duration = block.timestamp.sub(updatedTimes[owner][index]);
+    function updateRewards(address staker) internal {
+        Stake storage stake = stakes[staker];
+        stake.rewards = calcRewards(staker);
+    }
+
+    function calcRewards(address staker) internal view returns (uint256) {
+        Stake memory stake = stakes[staker];
+        uint256 duration = block.timestamp.sub(stake.lastUpdateTime);
         uint256 rewards = duration
             .mul(interestRate)
-            .mul(stakes[owner][index])
+            .mul(stake.totalBalance)
             .div(100)
             .div(365 * 24 * 60 * 60);
-        return rewards;
+        return stake.rewards.add(rewards);
     }
 }
